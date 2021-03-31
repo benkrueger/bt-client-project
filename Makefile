@@ -19,6 +19,7 @@ clean: ${EXE} ${REPORTS} ${TEMPFILES}
 	rm -rf ${EXE} ${LIB}
 	rm -rf ${TEMPFILES}
 	rm -rf ${REPORTS}
+	
 reports: ${TEXFILES}
 	${TEXC} ${TEXFILES}
 	mv *.pdf ${REPORTS}
