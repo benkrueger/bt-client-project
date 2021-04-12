@@ -10,24 +10,24 @@ import(
 
 )
 var t *common.Metadata
+//var peers map[string]*common.Peer
+
 func main() {
 	file := flag.String("f","","File to track")
 	port := flag.String("p","8080","TCP port to listen to peer requests")
 	export := flag.Bool("e",false,"Print metadata file to stdout")
 	flag.Parse()
 	var err error
-	var p_test *common.Peer
-
-	pbytes,_ := common.PeerBytesFromStr("192.168.1.1","25565")
-	p_test.CreatePeer(pbytes)
+	
 	t,err = common.CreateMetadata(2048,"localhost",*file)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
 	var infohash string
 	infohash,err = t.GetInfoHash()
+	common.InitializePeerMap(infohash,2556)
+
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -56,11 +56,13 @@ func OutputTrackerFile() (error){
 	return nil
 }
 
+
+
 func HandleTorrentRequest(w http.ResponseWriter,r *http.Request){
 	w.Header().Set("Content-Type","application/json")
 	fmt.Println(r.Method)
 	if r.Method == "GET" && r.URL.Query()["info_hash"] != nil{
-		jsbytes,_ := t.OutputJSON()
+		jsbytes,_ := common.PeerMapMarshalJSON()
 		w.Write(jsbytes)
 	}else{
 		w.Write([]byte("{\"error\":\"invalid request\"}"))

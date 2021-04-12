@@ -1,0 +1,14 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\title{Bitorrent: Implementing a client and investigating improvements}
+\author{Benjamin Krueger. Patrick Carra}
+\begin{document}
+\maketitle
+\section{Abstract}
+In this paper we will implement a client for the Bittorrent protocol as a primary objective. As a secondary objective, we will investigate the use of a homomorphic hash algorithm known as LtHash as a means of improving algorithmic performance of the bittorrent protocol.
+
+Bitorrent (BT) is a peer to peer filesharing protocol that has been in use since 2001. Generally, bitorrent utilizes a hybrid client-server model, with a "Tracker" acting as a server that track the "clients" or peers in the network that are hosting or "seeding" a particular file. BT is extremely popular and generates a significant chunk of  all internet traffic. There are 2 official versions of the protocol, and it has been adapted to work as part of content distribution systems, in browsers and in distributed applications. In this project, per our primary objective we will implement a BT client in c++ capable of downloading and seeding files from a tracker. Our secondary objective will investigate utilizing a homomorphic hash algorithm known as LtHash to improve the algorithmic performance of file integrity checking. Our report will also include analysis of the protocol, network performance and design decisions made during the process of development
+
+ 
+\end{document}
