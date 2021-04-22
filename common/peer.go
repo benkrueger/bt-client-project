@@ -8,9 +8,9 @@ import (
 	//"strconv"
 	"errors"
 )
-const PB_SIZE = 6 
+
 type Peer struct {
-	Address net.Addr `json:"Address"`
+	Address string `json:"Address"`
 	Port uint16 `json:Port`
 }
 
@@ -24,7 +24,8 @@ func ReturnLocalInterfacesAsPeers(port uint16)([] *Peer){
 	}
 	for _,addr := range(addrs) {
 		var p Peer
-		p.Address = addr
+		p.Address = addr.String()
+		fmt.Println(addr.String())
 		p.Port = port
 		rtr = append(rtr, &p)
 
@@ -62,21 +63,38 @@ func GetPeerlistAtInfohash( ihash string)([]*Peer){
 	}
 	return nil
 }
-func PeerMapUnmarshalJSON(jsbytes []byte, infohash string)(error) {
+func PeerMapUnmarshalJSON(jsbytes []byte, infohash string)(error,[] *Peer ) {
 	var jsonpeers map[string]interface{}
-	json.Unmarshal(jsbytes,&jsonpeers)
-	if jsonpeers == nil {
+	var peerlist []*Peer
+	err := json.Unmarshal(jsbytes,&jsonpeers)
+	if err != nil {
 		return errors.New("Unable to unmarshal json to peer map")
 	}
 	for i,_ := range(jsonpeers) {
 		plist,ok := jsonpeers[i].([]interface{})
 		if ok {
 			for _,v := range(plist) {
-				fmt.Println(v)
+				var tmpPeer Peer
+				p,ok2 := v.(map[string]interface{})
+				//fmt.Println(v)
+				if ok2 {
+					
+					port,portok := p["Port"].(float64)
+					if portok {
+						tmpPeer.Port = uint16(port)
+					}
+					peer_addr_if,peer_addr_ok := p["Address"].(string)
+					if peer_addr_ok {
+						tmpPeer.Address = peer_addr_if
+					}
+				}
+
+				append(peerlist,&tmpPeer)
 			}
+
 		} else {
 			return errors.New("Failure to umarshal peer struct list")
 		}
 	}
-	return nil
+	return nil,peerlist
 }
